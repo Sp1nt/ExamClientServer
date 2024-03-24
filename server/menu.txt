@@ -1,0 +1,9 @@
+    {"name": "Spicy McCrispy","category": "Burgers","price": 6.99},
+    {"name": "Quarter Pounder","category": "Burgers","price": 9.49},
+    {"name": "Big Mac","category": "Burgers","price": 2.29},
+    {"name": "Double Cheeseburger","category": "Burgers","price": 6.79},
+    {"name": "French Fries","category": "Sides","price": 3.99},
+    {"name": "Chicken McNuggets","category": "Sides","price": 4.89},
+    {"name": "Sprite","category": "Drinks","price": 2.39},
+    {"name": "Coca-Cola","category": "Drinks","price": 3.45},
+    {"name": "Vanilla Shake","category": "Drinks","price": 4.20}
