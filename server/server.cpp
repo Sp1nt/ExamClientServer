@@ -30,41 +30,47 @@ float total_bill = 0.0;
 
 void readMenuFromFile(const string& filename) {
     ifstream file(filename);
-    if (file.is_open()) {
-        stringstream buffer;
-        buffer << file.rdbuf();
-        file.close();
-
-        string jsonString = buffer.str();
-
-        size_t pos = 0;
-        int products = 0;
-        while ((pos = jsonString.find("name", pos)) != string::npos) {
-            products++;
-            pos += 4;
-        }
-
-        menu = new MainMenu[products];
-        pos = 0;
-        int i = 0;
-
-        while ((pos = jsonString.find("name", pos)) != string::npos) {
-            size_t nameEnd = jsonString.find(",", pos + 4);
-            menu[i].name = jsonString.substr(pos + 8, nameEnd - pos - 9);
-
-            size_t categoryStart = jsonString.find("category", nameEnd);
-            size_t categoryEnd = jsonString.find(",", categoryStart + 12);
-            menu[i].category = jsonString.substr(categoryStart + 12, categoryEnd - categoryStart - 13);
-
-            size_t priceStart = jsonString.find("price", categoryEnd);
-            size_t priceEnd = jsonString.find(",", priceStart + 8);
-            menu[i++].price = stof(jsonString.substr(priceStart + 8, priceEnd - priceStart - 8));
-            pos = priceEnd;
-        }
-        order = products;
-    }
-    else {
+    if (!file.is_open()) {
         cout << "Unable to open file " << filename << endl;
+        return;
+    }
+
+    // Чтение JSON из файла
+    string line;
+    vector<string> jsonLines;
+    while (getline(file, line)) {
+        jsonLines.push_back(line);
+    }
+    file.close();
+
+    // Подсчет количества продуктов
+    int products = jsonLines.size();
+    menu = new MainMenu[products];
+    order = products;
+
+    // Итерация по каждой строке JSON
+    for (int i = 0; i < jsonLines.size(); i++) {
+        const string& jsonString = jsonLines[i];
+
+        // Извлечение данных о продукте
+        size_t pos = 0;
+        pos = jsonString.find("\"name\"", pos);
+        if (pos != string::npos) {
+            size_t nameEnd = jsonString.find(",", pos + 4);
+            menu[i].name = jsonString.substr(pos + 9, nameEnd - pos - 10);
+
+            pos = jsonString.find("\"category\"", nameEnd);
+            if (pos != string::npos) {
+                size_t categoryEnd = jsonString.find(",", pos + 12);
+                menu[i].category = jsonString.substr(pos + 13, categoryEnd - pos - 14);
+
+                pos = jsonString.find("\"price\"", categoryEnd);
+                if (pos != string::npos) {
+                    size_t priceEnd = jsonString.find(",", pos + 8);
+                    menu[i].price = stof(jsonString.substr(pos + 9, priceEnd - pos - 10));
+                }
+            }
+        }
     }
 }
 
